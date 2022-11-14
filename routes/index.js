@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router();
 const admin = require('../config/firebase-config');
 router.use(express.json());
-// router.use(express.urlencoded({extended: true}));
+router.use(express.urlencoded({extended: true}));
+
+const firestore = admin.firestore();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -21,6 +23,13 @@ router.post('/signup', async (req, res) => {
     disabled: false
   });
   res.json(userResponse);
+});
+
+router.post('/createUser', async(req, res) => {
+  const data = req.body;
+  const users = firestore.collection("Users");
+  await users.add(data);
+  res.json(data);
 });
 
 module.exports = router;
